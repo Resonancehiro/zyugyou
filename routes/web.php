@@ -96,6 +96,15 @@ Route::get("/last",function(){
     ]);
 });
 
+// [GET] /last カートの表示
+Route::get("/last",function(){
+    $cartItems = request()->session()->get("CART",[]);
+    return view("last",[
+        "cartItems" => $cartItems
+    ]);
+});
+
+
 // [POST] /cart/{item_id}
 Route::post("/cart/{item_id}",function($itemId){
     $items = DB::select("SELECT * FROM items where id = ?",[$itemId]);
@@ -126,8 +135,20 @@ Route::post("buy",function(){
         'address' => ['required'],
         'tel' => ['required','max:9'],
     ])->validate();
+    request()->session()->put("user",request()->all());
     return redirect("last");
 });
+
+
+// [GET] /last 表示
+Route::get("/last",function(){
+    $aa = request()->session()->get("user",[]);
+
+    return view("last",[
+        "user" => $aa
+    ]);
+});
+
 
 // [POST] /cart/{item_id} 購入時のカートの消去
 Route::get("/cart/de",function(){
